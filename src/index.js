@@ -13,11 +13,34 @@ import bodyParser from "body-parser";
 
 const app = express();
 
-app.use(bodyParser.json())
-  .use(contactRoutes)
-  .use(vehicleRoutes)
-  .use(commentRoutes)
-  .use(productRoutes);
+app.use(bodyParser.json());
+app.use(contactRoutes);
+app.use(vehicleRoutes);
+app.use(commentRoutes);
+app.use(productRoutes);
+
+// default route
+app.get('/*', (request, response) => {
+  return response.json({
+    message: 'not implemented yet'
+  });
+});
+
+// add middleware for error handling
+app.use((request, response, next) => {
+  console.log('middleware is executed')
+  next();
+});
+
+app.use((err, request, response, next) => {
+  console.log('error middleware is executed')
+  // console.log('error middleware is executed', err)
+
+// error response plus status code
+  return response.status(500).json({message: err.message});
+});
+
+
 
 const port = process.env.PORT || 3001;
 app.listen(port, () => {
